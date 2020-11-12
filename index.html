@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>to do list</title>
+    <link rel="stylesheet" href="style.css" />
+    <script
+      src="https://kit.fontawesome.com/87058170bc.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    
+    <div id="app">
+      <h1>ToDo List</h1>
+      <div class="newTodo">
+        <input
+          v-model.trim="input.title"
+          type="text"
+          placeholder="待辦事項..."
+        />
+        <button @click="submitHandler"><i class="fas fa-plus-circle"></i></button>
+        <button @click="cancelHandler"><i class="fas fa-trash-alt"></i></button>
+      </div>
+      <div class="menu">
+        <div
+          class="menuItem"
+          v-for="(item,index) in todos"
+          @dblclick="editTodo(item)"
+        >
+          <div class="value" v-if="item.id !== cacheTodo.id">
+            <input
+              type="checkbox"
+              v-model="item.completed"
+              :id="item.id"
+              @click="changeCompleted(item,index)"
+            />
+            <div class="label">
+              <label :for="item.id" :class="{'completed':item.completed}">
+                {{item.title}}</label
+              >
+            </div>
+
+            <!-- <button class="edit" @click="editTodo(item)">修改</button> -->
+
+            <button class="btn delete" @click="deleteHandler(index)">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+            <button class="btn up" v-on:click="moveUp(index,item)">
+              <i class="far fa-arrow-alt-circle-up"></i>
+            </button>
+            <button class="btn down" v-on:click="moveDown(index,item)">
+              <i class="far fa-arrow-alt-circle-down"></i>
+            </button>
+          </div>
+          <input class="edit"
+            type="text"
+            v-if="item.id === cacheTodo.id"
+            v-model="cacheTitle"
+            @keyup.enter="doneEdit(item)"
+            @keyup.esc="cancelEdit()"
+          />
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+    <script>
+      var vm = new Vue({
+        el: "#app",
+        data: {
+          todos: [],
+          input: {
+            title: "",
+            completed: false,
+          },
+          cacheTodo: {},
+          cacheTitle: "",
+        },
+        methods: {
+          submitHandler() {
+            if (!this.input.title) return;
+            axios
+              .post("http://localhost:8888/todo", this.input)
+              .then((res) => {
+                this.todos.push(res.data);
+                this.cancelHandler();
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          },
+          cancelHandler() {
+            this.input.title = "";
+          },
+          deleteHandler(index) {
+            let target = this.todos[index];
+            if (confirm(`刪除否 ${target.title}? `)) {
+              axios
+                .delete("http://localhost:8888/todo/" + target.id)
+                .then((res) => {
+                  this.todos.splice(index, 1);
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }
+          },
+          moveUp(index, item) {
+            //在上一項插入該項
+            this.todos.splice(index - 1, 0, this.todos[index]);
+            //刪除後一項
+            this.todos.splice(index + 1, 1);
+            if (index == 0) {
+              alert("緊急事件!!");
+            }
+          },
+          moveDown(index, item) {
+            //在下一項插入該項
+            this.todos.splice(index + 2, 0, this.todos[index]);
+            //  刪除前一項
+            this.todos.splice(index, 1);
+            if (index == this.todos.length - 1) alert("不要逃避啦!");
+          },
+          changeCompleted(item, index) {
+            this.todos[index].completed = !this.todos[index].completed;
+          },
+          editTodo(item) {
+            this.cacheTodo = item;
+            this.cacheTitle = item.title;
+          },
+          cancelEdit() {
+            this.cacheTodo = {};
+          },
+          doneEdit(item) {
+            item.title = this.cacheTitle;
+            this.cacheTitle = "";
+            this.cacheTodo = {};
+          },
+        },
+        mounted() {
+          axios
+            .get("http://localhost:8888/todo")
+            .then((res) => {
+              this.todos = res.data;
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        },
+      });
+    </script>
+  </body>
+</html>

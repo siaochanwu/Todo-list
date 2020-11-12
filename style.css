@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Goldman:wght@700&display=swap');
+*{
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+#app{
+  width: 300px;
+  margin: 50px auto;
+  background-color: rgb(187, 229, 240);
+  padding: 50px;
+  border-radius: 2%;
+}
+h1{
+  font-family: 'Goldman',
+  cursive;
+  font-size: 42px;
+}
+.newTodo{
+  width: 100%;
+  height: 50px;
+}
+.newTodo input{
+  height: 30px;
+  width: 70%;
+  background-color: #fff;
+  border: 4px solid rgb(98, 188, 211);
+  border-radius: 0.5em;
+}
+.newTodo button{
+  font-size: 25px;
+  padding: 5px;
+  border: rgb(187, 229, 240);
+  background-color: rgb(187, 229, 240);
+  border: none;
+  color: red;
+}
+.completed {
+  text-decoration: line-through;
+}
+
+.menuItem .value{
+  width: 300px;
+  display: flex;
+}
+.menuItem .value input{
+  width: 20px;
+  height: 20px;
+  margin: 10px auto;
+}
+.menuItem .value .label{
+  width:200px;
+  padding: 5px;
+  font-size: 20px;
+  /* text-align: center; */
+}
+.menuItem .delete{
+  font-size: 25px;
+  border: rgb(187, 229, 240);
+  background-color: rgb(187, 229, 240);
+  
+} 
+.menuItem .up{
+  font-size: 25px;
+  padding: 5px;
+  border: rgb(187, 229, 240);
+  background-color: rgb(187, 229, 240);
+}
+.menuItem .value .down {
+  font-size: 25px;
+  border: rgb(187, 229, 240);
+  background-color: rgb(187, 229, 240);
+  
+  
+}
+.edit {
+ font-size: 20px;
+ width: 200px;
+ margin: 0 15px;
+}
+
+
